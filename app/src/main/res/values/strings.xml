@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Sing-ely (rev 0.2)</string>
+
+    <string-array name="clefNames">
+        <item>Treble</item>
+        <item>Bass</item>
+    </string-array>
+
+    <string name="clefPrompt">Pick Staff</string>
+
+    <string-array name="keyNames">
+        <item>C/Am []</item>
+        <item>G/Em [F#]</item>
+        <item>D/Bm [F#C#]</item>
+        <item>A/F#m [F#C#G#]</item>
+        <item>E/C#m [F#C#G#D#]</item>
+        <item>B/G#m [F#C#G#D#A#]</item>
+        <item>F#/D#m [F#C#G#D#A#E#]</item>
+        <item>C#/A#m [F#C#G#D#A#E#B#]</item>
+        <item>F/Dm [Bb]</item>
+        <item>Bb/Gm [BbEb]</item>
+        <item>Ab/Fm [BbEbAbDb]</item>
+        <item>Db/Bbm [BbEbAbDbGb]</item>
+        <item>Gb/Ebm [BbEbAbDbGbCb]</item>
+        <item>Cb/Abm [BbEbAbDbGbCbFb]</item>
+    </string-array>
+
+    <string-array name="transposeNames">
+        <item>0:same pitch</item>
+        <item>-1:Down one half step</item>
+        <item>-2:Down two half steps</item>
+        <item>-3:Down three half steps</item>
+        <item>-4:Down four half steps</item>
+        <item>-5:Down five half steps</item>
+        <item>-6:Down six half steps</item>
+        <item>1:Up one half step</item>
+        <item>2:Up two half steps</item>
+        <item>3:Up three half steps</item>
+        <item>4:Up four half steps</item>
+        <item>5:Up five half steps</item>
+        <item>6:Up six half steps</item>
+
+    </string-array>
+
+
+</resources>
