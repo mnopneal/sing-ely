@@ -20,7 +20,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -59,9 +58,7 @@ public class MainActivity extends AppCompatActivity {
     static public Boolean showPianoKeys;
     static public Boolean showFrequencies;
     static public Boolean showCoordinates;
-    static public EditText fudgeFactorFld;
-    static public String fudgeFactorString;
-    static public Float fudgeFactor;
+    static public Float fudgeFactor = 1.1f;
 
 
     @Override
@@ -109,10 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.transposeNames));
         myTransposeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinnerTranspose.setAdapter(myTransposeAdapter);
-
-        fudgeFactorFld = (EditText) findViewById(R.id.fudgeFactor);
-        fudgeFactorFld.setText("1.1");
-
 
         ourView = new TouchEventAction(this, null);
         ourView.setImageBitmap(mybitmap);
@@ -173,11 +166,6 @@ public class MainActivity extends AppCompatActivity {
                     locString = locString.substring(0,endPos); /* Now we just have the number */
                 ourTranspose =  Integer.parseInt(locString);
                 Log.e("MyDebug", "ourTranspose = " + ourTranspose);
-
-                fudgeFactorString = fudgeFactorFld.getText().toString();
-                Log.i("MyDebug", "fudgeFactorString = " + fudgeFactorString);
-                fudgeFactor = Float.parseFloat(fudgeFactorString);
-                Log.e("MyDebug", "fudgeFactor = " + fudgeFactor);
 
                 Log.e("MyDebug", "about to instantiate StaffDisplay");
                 Log.i("MyDebug", "Building " + ourKeyShow);
@@ -482,9 +470,8 @@ public class MainActivity extends AppCompatActivity {
                     + "," + String.valueOf(StaffTable.getLastFudgedY());
         if (MainActivity.getShowPianoKeys()) toShow = toShow +  " - note " + String.valueOf(StaffTable.getLastPianoNote());
         if (MainActivity.getShowFrequencies()) toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
-        Log.i("PlaySound", "toShow: " + toShow + "; " + Toast.LENGTH_SHORT );
-        mypaint.setTextSize(25); mycanvas.drawText(toShow, myWidth - 140, myHeight - 35, mypaint);
-        /* Toast.makeText(mContext, toShow, Toast.LENGTH_LONG).show(); */
+
+
         Toast toast = Toast.makeText(mContext, toShow, Toast.LENGTH_SHORT);
 
         /* This puts it where the finger press was... */
