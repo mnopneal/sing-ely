@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -51,11 +52,17 @@ public class MainActivity extends AppCompatActivity {
     static public Paint mypaint = new Paint();
     Button mybutton;
 
+    static public float myXDpi;
+
     static public Boolean showNotes;        /* These are set by the UI and used for options */
     static public Boolean showKeyPress;
     static public Boolean showPianoKeys;
     static public Boolean showFrequencies;
     static public Boolean showCoordinates;
+    static public EditText fudgeFactorFld;
+    static public String fudgeFactorString;
+    static public Float fudgeFactor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +73,8 @@ public class MainActivity extends AppCompatActivity {
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         int dens = dm.densityDpi;
-        Log.e("Startup", "Width: " + width + "; Height: " + height + "; dens: " + dens);
+        myXDpi = dm.xdpi;
+        Log.e("Startup", "Width: " + width + "; Height: " + height + "; dens: " + dens + "; xdpi:" + myXDpi);
 
         mybitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mycanvas = new Canvas(mybitmap);
@@ -101,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
                 android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.transposeNames));
         myTransposeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mySpinnerTranspose.setAdapter(myTransposeAdapter);
+
+        fudgeFactorFld = (EditText) findViewById(R.id.fudgeFactor);
+        fudgeFactorFld.setText("1.1");
+
 
         ourView = new TouchEventAction(this, null);
         ourView.setImageBitmap(mybitmap);
@@ -162,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
                 ourTranspose =  Integer.parseInt(locString);
                 Log.e("MyDebug", "ourTranspose = " + ourTranspose);
 
+                fudgeFactorString = fudgeFactorFld.getText().toString();
+                Log.i("MyDebug", "fudgeFactorString = " + fudgeFactorString);
+                fudgeFactor = Float.parseFloat(fudgeFactorString);
+                Log.e("MyDebug", "fudgeFactor = " + fudgeFactor);
+
                 Log.e("MyDebug", "about to instantiate StaffDisplay");
                 Log.i("MyDebug", "Building " + ourKeyShow);
                 StaffTable.BuildStaffTableInternally(ourClef, ourTranspose, myHeight, ourKeySharpFlatList);
@@ -216,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Log.e("MyDebug", "Start of StaffDisplayStaffLine " + yPos + "; " + vtype + "; " + sharpFlat);
+        Log.i("MyDebug", "Start of StaffDisplayStaffLine " + yPos + "; " + vtype + "; " + sharpFlat);
         if (sharpFlat != ' ' && idx > 2 && idx < 10)  /* constrain sharp & flats to body of staff */
         {
             offset = halfChunk / 10;   /* just a little bit of fudge to line up better */
@@ -241,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
         {
             startx = 40;
             endx = myWidth - 130;
-            Log.e("MyDebug", "  Full Width drawline: " + startx + "; " + yPos + "; " + endx );
+            Log.i("MyDebug", "  Full Width drawline: " + startx + "; " + yPos + "; " + endx );
             mycanvas.drawLine(startx, yPos, endx, yPos, mypaint);
         }
         else /* A short line above/below the staff.  Where to put it? how about 1/3 centered? */
@@ -249,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
             thirdWidth = myWidth / 3;
             startx = thirdWidth;
             endx = thirdWidth * 2;
-            Log.e("MyDebug", "  Part Width drawline: " + startx + "; " + yPos + "; " + endx );
+            Log.i("MyDebug", "  Part Width drawline: " + startx + "; " + yPos + "; " + endx );
             mycanvas.drawLine(startx, yPos, endx, yPos, mypaint);
         }
 
@@ -452,6 +469,7 @@ public class MainActivity extends AppCompatActivity {
     static public boolean getShowNotes() { return showNotes;    }
     static public boolean getShowPianoKeys() { return showPianoKeys;    }
     static public boolean getShowFrequencies() { return showFrequencies;    }
+    static public float getfudgeFactor() { return fudgeFactor;    }
 
 
     static public void showNoteDetails(){
@@ -464,7 +482,7 @@ public class MainActivity extends AppCompatActivity {
                     + "," + String.valueOf(StaffTable.getLastFudgedY());
         if (MainActivity.getShowPianoKeys()) toShow = toShow +  " - note " + String.valueOf(StaffTable.getLastPianoNote());
         if (MainActivity.getShowFrequencies()) toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
-        Log.e("PlaySound", "toShow: " + toShow + "; " + Toast.LENGTH_SHORT );
+        Log.i("PlaySound", "toShow: " + toShow + "; " + Toast.LENGTH_SHORT );
         mypaint.setTextSize(25); mycanvas.drawText(toShow, myWidth - 140, myHeight - 35, mypaint);
         /* Toast.makeText(mContext, toShow, Toast.LENGTH_LONG).show(); */
         Toast toast = Toast.makeText(mContext, toShow, Toast.LENGTH_SHORT);
@@ -476,5 +494,21 @@ public class MainActivity extends AppCompatActivity {
         fudgedY = (int)( (float)StaffTable.getLastLinePos() * .9 );
         toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, fudgedY + StaffTable.gethalfChunk() + 10  );
         toast.show();
+    }
+
+    static public int dpToPx(int dp) {
+        return Math.round(dp * (myXDpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+
+    static public int pxToDp(int px) {
+        return Math.round(px / (myXDpi / DisplayMetrics.DENSITY_DEFAULT));
+    }
+    static public void setNewFudgeFactor(float vpos) {
+        /* Called from TouchEventJava with max Y position.   We want this to be equal to myHeight.  */
+        fudgeFactor = (float)myHeight / vpos;
+        Toast.makeText(mContext, "Fudge Factor set to " + fudgeFactor, Toast.LENGTH_LONG).show();
+    }
+    static public void toastThis(String msg) {
+        Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
 }

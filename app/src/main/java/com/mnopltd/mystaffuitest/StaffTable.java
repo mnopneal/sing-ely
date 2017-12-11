@@ -170,7 +170,10 @@ public class StaffTable
     {
         int idx;
         int useIdx;
-        int myPos = vpos + (vpos / 10);
+        int myPos;
+        /* myPos = vpos + (vpos / 10);  Original fudge appears to work on Android 4 and 5.  Is off for 7 */
+        /* myPos = MainActivity.pxToDp(vpos)  / 2;  Well, that didn't really work either. */
+        myPos = (int)(  (float) vpos * MainActivity.getfudgeFactor() );
         lastFudgedY = myPos;
         Log.e("MyDebug", "Searching for: " + vpos + "; myPos = " + myPos );
         for(idx=0; idx < 17; idx++)

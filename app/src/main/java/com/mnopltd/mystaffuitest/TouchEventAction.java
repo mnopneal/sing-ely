@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 
 /**
@@ -16,6 +17,7 @@ public class TouchEventAction extends ImageView {
     public static int lastX;
     public static int lastY;
     public static char lastAccidental;
+    public static boolean figureFudgeFactor;
 
     public TouchEventAction(Context context, AttributeSet attrs) {
         super(context);
@@ -26,6 +28,7 @@ public class TouchEventAction extends ImageView {
     public boolean onTouchEvent(MotionEvent event) {
         float eventX = event.getX();
         float eventY = event.getY();
+        float eventRawY = event.getRawY();
         int pNote;
 
         switch (event.getAction()) {
@@ -33,9 +36,25 @@ public class TouchEventAction extends ImageView {
                 Log.e("Action", "Down Tapped at: (" + eventX + "," + eventY + ")");
                 /* Toast.makeText(MainActivity.this, "YPos: " + eventY, Toast.LENGTH_LONG).show(); */
                 /* path.addCircle(eventX, eventY, 50, Path.Direction.CW); */
+                Log.e("Action", "Converts to: " + MainActivity.dpToPx((int)eventY) +  " or " + MainActivity.pxToDp((int)eventY));
+
                 lastX = (int) eventX;
                 lastY = (int) eventY;
                 lastAccidental = ' ';
+
+                if (eventX < 30 && eventY < 30) {
+                    /* Top left; basically set things in motion for next keypress to be bottom right, then do fudge factor; */
+                    MainActivity.toastThis("To figure the fudge factor, next press the bottom right of screen..." );
+                    figureFudgeFactor = true;
+                    return true;
+                }
+                if (figureFudgeFactor) {
+                    /* Ok, we want to see what factor we need in order to take the supplied Y coordinate and make it the same as the screen height.
+                    *  This is probably simplest if we call a method in the main activity */
+                    MainActivity.setNewFudgeFactor(eventY);
+                    figureFudgeFactor = false;
+                    return true;
+                }
                 pNote = StaffTable.SearchStaffTableForPianoKey((int)eventY);
                 if (eventX < 50) {
                     pNote = pNote - 1;  /* Flat Accidental */
