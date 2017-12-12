@@ -23,6 +23,14 @@ import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+
 import static android.widget.Toast.makeText;
 import static com.mnopltd.mystaffuitest.NoteFreqTable.SearchNoteFreqTableForFreq;
 
@@ -82,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         InitSound();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-
+        getPriorFudgeFactor();
         setContentView(R.layout.activity_main);
 
         makeText(mContext, "Starting UI...", Toast.LENGTH_LONG).show();
@@ -490,11 +498,76 @@ public class MainActivity extends AppCompatActivity {
     static public int pxToDp(int px) {
         return Math.round(px / (myXDpi / DisplayMetrics.DENSITY_DEFAULT));
     }
+
     static public void setNewFudgeFactor(float vpos) {
+        String myString;
+        FileOutputStream outputStream;
         /* Called from TouchEventJava with max Y position.   We want this to be equal to myHeight.  */
-        fudgeFactor = (float)myHeight / vpos;
+        fudgeFactor = (float) myHeight / vpos;
         Toast.makeText(mContext, "Fudge Factor set to " + fudgeFactor, Toast.LENGTH_LONG).show();
+
+        myString = String.valueOf(fudgeFactor);
+
+        /* Well, I tried a couple of approaches to bridge the static calls non-static.  Both failed.  I don't know how to get out of this swamp */
+        writeToFile(myString, mContext  );
+        /* OR */
+        try {
+            outputStream = openFileOutput("fudgeFactor.dat", mContext.MODE_PRIVATE);
+            outputStream.write(myString.getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+    private void writeToFile(String data,Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("fudgefactor.dat", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
+
+     static public void getPriorFudgeFactor(){
+        String myString;
+        myString = readFromFile(mContext);
+         Log.e("login activity", "readFromFile returned: " + myString);
+         if (myString != "") {
+             fudgeFactor = Float.parseFloat(myString);
+             if (fudgeFactor > 2f || fudgeFactor < 0.5f ) fudgeFactor = 1.1f;
+         }
+     }
+
+    static String readFromFile(Context context) {
+        String ret = "";
+        try {
+            InputStream inputStream = context.openFileInput("fudgeFactor.dat");
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
+
+        return ret;
+    }
+
     static public void toastThis(String msg) {
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
