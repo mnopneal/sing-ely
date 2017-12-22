@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MyDebug", "ShowNotes = " + showKeyPress.toString()  );
 
                 locString = mySpinnerClef.getSelectedItem().toString();   /*looks like "Treble" or "Bass" */
-                locString = locString.toLowerCase();
                 ourKeyShow = locString + " Staff in ";
+                locString = locString.toLowerCase();
                 ourClef = locString.charAt(0);
                 Log.e("MyDebug", "ourClef = " + ourClef);
 
@@ -211,16 +211,28 @@ public class MainActivity extends AppCompatActivity {
 
     public void DrawClefSymbol(char staff) {
         Drawable d;
+        int myPos;
         if (staff == 'b' ) {
             d = getResources().getDrawable(R.drawable.bass_clef_th);
             d.setBounds(10, 10, 100, 200);
+            d.draw(mycanvas);
+        }
+        else if (staff == 't' ) {
+            d = getResources().getDrawable(R.drawable.treble_clef_big);
+            d.setBounds(10, 10, 200, 300);
+            d.draw(mycanvas);
         }
         else {
             d = getResources().getDrawable(R.drawable.treble_clef_big);
             d.setBounds(10, 10, 200, 300);
+            d.draw(mycanvas);
+            myPos = (int) ( (float)myHeight * 0.65);
+            d = getResources().getDrawable(R.drawable.bass_clef_th);
+            d.setBounds(10, myPos, 100,  myPos + 200);
+            d.draw(mycanvas);
         }
-        d.setBounds(10, 10, 100, 200);
-        d.draw(mycanvas);
+
+
     }
 
     static public void DisplayStaffLine(int yPos, char vtype, char sharpFlat, int halfChunk, String toShow, int idx)
@@ -486,8 +498,8 @@ public class MainActivity extends AppCompatActivity {
         /* toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, (TouchEventAction.getLastY() + StaffTable.gethalfChunk() + 10) ); */
 
         /* But maybe it's better to put it where we recognized it. */
-        fudgedY = (int)( (float)StaffTable.getLastLinePos() * .9 );
-        toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, fudgedY + StaffTable.gethalfChunk() + 10  );
+        fudgedY = (int)( (float)StaffTable.getLastLinePos() / fudgeFactor );
+        toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, fudgedY + StaffTable.gethalfChunk() + 20  );
         toast.show();
     }
 
@@ -510,7 +522,7 @@ public class MainActivity extends AppCompatActivity {
 
         /* Well, I tried a couple of approaches to bridge the static calls non-static.  Both failed.  I don't know how to get out of this swamp */
         writeToFile(myString, mContext  );
-        /* OR */
+        /* OR
         try {
             outputStream = openFileOutput("fudgeFactor.dat", mContext.MODE_PRIVATE);
             outputStream.write(myString.getBytes());
@@ -518,9 +530,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        */
     }
 
-    private void writeToFile(String data,Context context) {
+    static private void writeToFile(String data,Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("fudgefactor.dat", Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
@@ -534,17 +547,18 @@ public class MainActivity extends AppCompatActivity {
      static public void getPriorFudgeFactor(){
         String myString;
         myString = readFromFile(mContext);
-         Log.e("login activity", "readFromFile returned: " + myString);
+         Log.e("getPriorFudgeFactor", "readFromFile returned: " + myString);
          if (myString != "") {
              fudgeFactor = Float.parseFloat(myString);
              if (fudgeFactor > 2f || fudgeFactor < 0.5f ) fudgeFactor = 1.1f;
+             Log.e("getPriorFudgeFactor", "fudgeFactor is: " + fudgeFactor);
          }
      }
 
     static String readFromFile(Context context) {
         String ret = "";
         try {
-            InputStream inputStream = context.openFileInput("fudgeFactor.dat");
+            InputStream inputStream = context.openFileInput("fudgefactor.dat");
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);

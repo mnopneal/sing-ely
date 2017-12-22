@@ -1,9 +1,10 @@
 <resources>
-    <string name="app_name">Sing-ely (rev 0.4)</string>
+    <string name="app_name">Sing-ely (rev 0.8)</string>
 
     <string-array name="clefNames">
         <item>Treble</item>
         <item>Bass</item>
+        <item>Middle of Bass and Treble</item>
     </string-array>
 
     <string name="clefPrompt">Pick Staff</string>
@@ -19,6 +20,7 @@
         <item>C#/A#m [F#C#G#D#A#E#B#]</item>
         <item>F/Dm [Bb]</item>
         <item>Bb/Gm [BbEb]</item>
+        <item>Eb/Cm [BbEbAb]</item>
         <item>Ab/Fm [BbEbAbDb]</item>
         <item>Db/Bbm [BbEbAbDbGb]</item>
         <item>Gb/Ebm [BbEbAbDbGbCb]</item>

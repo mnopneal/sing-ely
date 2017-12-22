@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 
 /**
@@ -42,7 +41,7 @@ public class TouchEventAction extends ImageView {
                 lastY = (int) eventY;
                 lastAccidental = ' ';
 
-                if (eventX < 30 && eventY < 30) {
+                if (eventX < 40 && eventY < 40) {
                     /* Top left; basically set things in motion for next keypress to be bottom right, then do fudge factor; */
                     MainActivity.toastThis("To figure the fudge factor, next press the bottom right of screen..." );
                     figureFudgeFactor = true;

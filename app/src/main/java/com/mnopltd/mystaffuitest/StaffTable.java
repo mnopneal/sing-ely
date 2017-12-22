@@ -53,7 +53,7 @@ public class StaffTable
             currentYPos = AssembleStaff(15, 'D', 2, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
             currentYPos = AssembleStaff(16, 'C', 2, '-',  transpose, sharpFlatList, currentYPos, yChunk );
         }
-        else
+        else if (whichStaff == 't')
         {
 		/* Treble Staff */
             currentYPos = AssembleStaff( 0, 'C', 6, '-',  transpose, sharpFlatList, currentYPos, yChunk );
@@ -73,6 +73,27 @@ public class StaffTable
             currentYPos = AssembleStaff(14, 'C', 4, '-',  transpose, sharpFlatList, currentYPos, yChunk );
             currentYPos = AssembleStaff(15, 'B', 3, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
             currentYPos = AssembleStaff(16, 'A', 3, '-',  transpose, sharpFlatList, currentYPos, yChunk );
+        }
+        else {
+            /* In between Staff, has some of both. */
+            currentYPos = AssembleStaff( 0, 'E', 5, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 1, 'D', 5, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 2, 'C', 5, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 3, 'B', 4, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 4, 'A', 4, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 5, 'G', 4, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 6, 'F', 4, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 7, 'E', 4, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 8, 'D', 4, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff( 9, 'C', 4, '-',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(10, 'B', 3, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(11, 'A', 3, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(12, 'G', 3, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(13, 'F', 3, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(14, 'E', 3, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(15, 'D', 3, '_',  transpose, sharpFlatList, currentYPos, yChunk );
+            currentYPos = AssembleStaff(16, 'C', 3, ' ',  transpose, sharpFlatList, currentYPos, yChunk );
+
         }
     }
     static public int AssembleStaff(int row, char note, int oct, char vtype,
