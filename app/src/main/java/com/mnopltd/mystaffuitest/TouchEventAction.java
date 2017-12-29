@@ -54,15 +54,11 @@ public class TouchEventAction extends ImageView {
                     figureFudgeFactor = false;
                     return true;
                 }
-                pNote = StaffTable.SearchStaffTableForPianoKey((int)eventY);
-                if (eventX < 50) {
-                    pNote = pNote - 1;  /* Flat Accidental */
-                    lastAccidental = 'b';
-                }
-                if (eventX > (MainActivity.getMyWidth() - 140)) {
-                    pNote = pNote + 1;  /* Sharp Accidental */
-                    lastAccidental = '#';
-                }
+
+                if (eventX < 50) lastAccidental = 'b';
+
+                if (eventX > (MainActivity.getMyWidth() - 140))  /* Sharp Accidental */  lastAccidental = '#';
+                pNote = StaffTable.SearchStaffTableForPianoKey((int)eventY, lastAccidental);
                 Log.e("Action", "pNote: " + pNote);
                 MainActivity.playSound(pNote);
                 return true;

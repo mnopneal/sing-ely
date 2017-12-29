@@ -499,7 +499,9 @@ public class MainActivity extends AppCompatActivity {
         if (showCoordinates) toShow = toShow + " at X,Y: " + String.valueOf(TouchEventAction.getLastX()) + "," + String.valueOf(TouchEventAction.getLastY())
                     + "," + String.valueOf(StaffTable.getLastFudgedY());
         if (MainActivity.getShowPianoKeys()) toShow = toShow +  " - note " + String.valueOf(StaffTable.getLastPianoNote());
-        if (MainActivity.getShowFrequencies()) toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
+        if (MainActivity.getShowFrequencies() && TouchEventAction.getLastAccidental() == ' ')
+            /* Can't figure frequency on accidentals so suppress. */
+            toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
 
 
         Toast toast = Toast.makeText(mContext, toShow, Toast.LENGTH_SHORT);

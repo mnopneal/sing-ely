@@ -187,10 +187,10 @@ public class StaffTable
         return 0;	/* Failure */
     }
 
-    static public int SearchStaffTableForPianoKey(int vpos )
+    static public int SearchStaffTableForPianoKey(int vpos, char accidental)
     {
         int idx;
-        int useIdx;
+        int offset;
         int myPos;
         /* myPos = vpos + (vpos / 10);  Original fudge appears to work on Android 4 and 5.  Is off for 7 */
         /* myPos = MainActivity.pxToDp(vpos)  / 2;  Well, that didn't really work either. */
@@ -203,12 +203,15 @@ public class StaffTable
             {
 			/* Then we have a match */
                 Log.e("MyDebug", "  Got Match on row " + idx + "... ");
-                lastPianoNote = BaseStaff[idx].getPianoKey();
+                offset = 0;
+                if ( accidental == 'b' && idx < 17) offset = -1;
+                if ( accidental == '#' && idx > 0) offset = 1;
+                lastPianoNote = BaseStaff[idx].getPianoKey() + offset;
                 lastNote = String.valueOf(BaseStaff[idx].getNote()) + String.valueOf(BaseStaff[idx].getOctave())
                         + String.valueOf(BaseStaff[idx].getSharpFlat()) ;
                 lastFreq = (int) BaseStaff[idx].getNormalFreq();
                 lastLinePos = BaseStaff[idx].getLinePos();
-                return BaseStaff[idx].getPianoKey();
+                return BaseStaff[idx].getPianoKey() + offset;
             }
         }
         return 0;	/* Failure */
