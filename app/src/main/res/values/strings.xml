@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sing-ely (rev 0.8)</string>
+    <string name="app_name">Sing-ely (rev 0.9)</string>
 
     <string-array name="clefNames">
         <item>Treble</item>

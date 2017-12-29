@@ -13,6 +13,7 @@ import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -90,10 +92,17 @@ public class MainActivity extends AppCompatActivity {
         InitSound();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
+
+
         getPriorFudgeFactor();
         setContentView(R.layout.activity_main);
 
         makeText(mContext, "Starting UI...", Toast.LENGTH_LONG).show();
+
+        TextView myHelp;
+        myHelp = (TextView) findViewById(R.id.textView6);
+        //next line enables the scrolling, do not forget!
+        myHelp.setMovementMethod(new ScrollingMovementMethod());
 
         final Spinner mySpinnerClef = (Spinner) findViewById(R.id.spinnerClef);
         mySpinnerClef.setSelection(2);
@@ -119,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         ourView.setImageBitmap(mybitmap);
         mypaint.setColor(Color.BLACK);
         mypaint.setStrokeWidth(10);
+
 
         mybutton = (Button) findViewById(R.id.mybutton);
         mybutton.setOnClickListener(new View.OnClickListener() {
@@ -486,7 +496,7 @@ public class MainActivity extends AppCompatActivity {
         toShow = "";
 
         if (showNotes) toShow = StaffTable.getLastNote() + TouchEventAction.getLastAccidental() ;
-        if (showCoordinates) toShow = toShow + "at X,Y: " + String.valueOf(TouchEventAction.getLastX()) + "," + String.valueOf(TouchEventAction.getLastY())
+        if (showCoordinates) toShow = toShow + " at X,Y: " + String.valueOf(TouchEventAction.getLastX()) + "," + String.valueOf(TouchEventAction.getLastY())
                     + "," + String.valueOf(StaffTable.getLastFudgedY());
         if (MainActivity.getShowPianoKeys()) toShow = toShow +  " - note " + String.valueOf(StaffTable.getLastPianoNote());
         if (MainActivity.getShowFrequencies()) toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
