@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
@@ -12,12 +13,14 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.view.WindowInsetsCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.WindowMetrics;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -68,19 +71,30 @@ public class MainActivity extends AppCompatActivity {
     static public Boolean showPianoKeys;
     static public Boolean showFrequencies;
     static public Boolean showCoordinates;
-    static public Float fudgeFactor = 1.1f;
+    static public Float fudgeFactor = 1.0f;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        /* 2017 method
         DisplayMetrics dm = new DisplayMetrics();
         this.getWindowManager().getDefaultDisplay().getMetrics(dm);
         int width = dm.widthPixels;
         int height = dm.heightPixels;
         int dens = dm.densityDpi;
         myXDpi = dm.xdpi;
+        */
+        WindowMetrics windowMetrics = getWindowManager().getCurrentWindowMetrics();
+        Insets insets = windowMetrics.getWindowInsets()
+                .getInsetsIgnoringVisibility(WindowInsetsCompat.Type.systemBars());
+        int width = windowMetrics.getBounds().width() - insets.left - insets.right;
+        int height = windowMetrics.getBounds().height() - insets.top - insets.bottom;
+
+        int dens = (int) getResources().getDisplayMetrics().densityDpi;
+        myXDpi = getResources().getDisplayMetrics().xdpi;
+
         Log.e("Startup", "Width: " + width + "; Height: " + height + "; dens: " + dens + "; xdpi:" + myXDpi);
 
         mybitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
@@ -383,6 +397,12 @@ public class MainActivity extends AppCompatActivity {
         } else {
             soundPool = new SoundPool(maxStreams, AudioManager.STREAM_MUSIC, 0);
         }
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                Log.e("InitSound", "Sample loaded: " + sampleId + " status: " + status);
+            }
+        });
 
         sm = new int[71];
         // fill your sounds
