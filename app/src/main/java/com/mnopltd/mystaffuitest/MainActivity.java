@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     static public Boolean showFrequencies;
     static public Boolean showCoordinates;
     static public Float fudgeFactor = 1.0f;
+    static boolean soundsInitialized = false;
 
 
     @Override
@@ -106,8 +107,10 @@ public class MainActivity extends AppCompatActivity {
         myWidth = width;
 
         mContext = getApplicationContext();
-        makeText(mContext, "Loading Sounds...", Toast.LENGTH_LONG).show();
-        InitSound();
+        if (!soundsInitialized) {
+            makeText(mContext, "Loading Sounds...", Toast.LENGTH_LONG).show();
+            InitSound();
+        }
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
 
@@ -211,7 +214,7 @@ public class MainActivity extends AppCompatActivity {
                 mycanvas.drawColor(0, PorterDuff.Mode.CLEAR);
                 StaffTable.displayStaffTable();
                 DrawClefSymbol(ourClef);
-                mypaint.setTextSize(25);
+                mypaint.setTextSize(40);
                 mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
                 setContentView(ourView);
                 Log.e("MyDebug", "After setContentView(ourView)");
@@ -416,8 +419,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void InitSound() {
-
         int maxStreams = 1;
+        if (soundsInitialized) {
+            Log.e("InitSound", "Already initialized, skipping...");
+            return;
+        }
+        soundsInitialized = true;
+
         Log.e("InitSound", "called...");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             soundPool = new SoundPool.Builder().setMaxStreams(maxStreams).build();
@@ -606,9 +614,9 @@ public class MainActivity extends AppCompatActivity {
         // Define the oval bounds around the text position
         RectF ovalBounds = new RectF(
                 myWidth / 3 - 10,
-                StaffTable.getLastLinePos() - 110,
+                StaffTable.getLastLinePos() - 90,
                 myWidth / 3 + 310,
-                StaffTable.getLastLinePos() + 15
+                StaffTable.getLastLinePos() + 95
         );
 
         // Draw black oval
@@ -616,9 +624,18 @@ public class MainActivity extends AppCompatActivity {
         mycanvas.drawOval(ovalBounds, mypaint);
 
         // Draw white text on top
+        float textWidth = mypaint.measureText(toShow);
+        float ovalCenterX = (myWidth / 3 - 10 + myWidth / 3 + 310) / 2;
+        float ovalCenterY = (StaffTable.getLastLinePos() - 10 + StaffTable.getLastLinePos() + 15) / 2;
+
+        // Draw white text centered in oval
         mypaint.setColor(Color.WHITE);
         mypaint.setTextSize(60);
-        mycanvas.drawText(toShow, myWidth / 3 +20, StaffTable.getLastLinePos(), mypaint);
+        // For vertical centering, offset by half the text height
+        Paint.FontMetrics fm = mypaint.getFontMetrics();
+        float textHeight = fm.descent - fm.ascent;
+        mycanvas.drawText(toShow, ovalCenterX - textWidth / 2, ovalCenterY - fm.ascent - textHeight / 2, mypaint);
+
         mypaint.setColor(Color.BLACK);
         // Redraw the view
         ourView.setImageBitmap(mybitmap);
