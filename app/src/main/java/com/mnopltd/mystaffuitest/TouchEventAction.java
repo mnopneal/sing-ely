@@ -3,8 +3,10 @@ package com.mnopltd.mystaffuitest;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
+
 
 
 /**
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 
 public class TouchEventAction extends ImageView {
         Context context;
+    private GestureDetector gestureDetector;
     public static int lastX;
     public static int lastY;
     public static char lastAccidental;
@@ -21,6 +24,21 @@ public class TouchEventAction extends ImageView {
     public TouchEventAction(Context context, AttributeSet attrs) {
         super(context);
         this.context = context;
+        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                float deltaY = e2.getY() - e1.getY();
+                if (Math.abs(deltaY) > 100) {  // threshold to distinguish from tap
+                    if (deltaY < 0) {
+                        MainActivity.changeStaff(-1);   // swipe up = go lower
+                    } else {
+                        MainActivity.changeStaff(1);  // swipe down = go higher
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -30,6 +48,7 @@ public class TouchEventAction extends ImageView {
         float eventRawY = event.getRawY();
         int pNote;
 
+        gestureDetector.onTouchEvent(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 Log.e("Action", "Down Tapped at: (" + eventX + "," + eventY + ")");
@@ -68,7 +87,7 @@ public class TouchEventAction extends ImageView {
                 setContentView(R.layout.activity_main);
                 */
                 Log.e("Action", "Other Action: Back " + event.getAction() );
-                return false;
+                return true;
             default:
                 Log.e("Action", "Other Action: (" + event.getAction() );
                 return false;

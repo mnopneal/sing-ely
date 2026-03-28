@@ -1,6 +1,7 @@
 package com.mnopltd.mystaffuitest;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -42,7 +43,8 @@ import static com.mnopltd.mystaffuitest.NoteFreqTable.SearchNoteFreqTableForFreq
 public class MainActivity extends AppCompatActivity {
 
     public static TouchEventAction ourView;
-    static public int myHeight = 1280; static int myWidth = 720;
+    static public int myHeight = 1280;
+    static int myWidth = 720;
     static public char ourClef;
     static public int ourTranspose;
     static public int sharpFlatZigZag = 0;
@@ -99,13 +101,13 @@ public class MainActivity extends AppCompatActivity {
 
         mybitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         mycanvas = new Canvas(mybitmap);
-        myHeight = height; myWidth = width;
+        myHeight = height;
+        myWidth = width;
 
         mContext = getApplicationContext();
         makeText(mContext, "Loading Sounds...", Toast.LENGTH_LONG).show();
         InitSound();
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
-
 
 
         getPriorFudgeFactor();
@@ -147,34 +149,34 @@ public class MainActivity extends AppCompatActivity {
         mybutton = (Button) findViewById(R.id.mybutton);
         mybutton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v){
+            public void onClick(View v) {
                 String locString;
                 int begPos, endPos;
                 NoteFreqTable.BuildNoteFreqTableInternally(); /* Construct that table */
                 NoteFreqTable.printNoteFreqTable(); /* Print out that table */
-                Log.e("MyDebug", "mySpinnerClef = " + mySpinnerClef.getSelectedItem().toString()  );
-                Log.e("MyDebug", "mySpinnerKey = " + mySpinnerKey.getSelectedItem().toString()    );
-                Log.e("MyDebug", "mySpinnerTranspose = " + mySpinnerTranspose.getSelectedItem().toString()  );
+                Log.e("MyDebug", "mySpinnerClef = " + mySpinnerClef.getSelectedItem().toString());
+                Log.e("MyDebug", "mySpinnerKey = " + mySpinnerKey.getSelectedItem().toString());
+                Log.e("MyDebug", "mySpinnerTranspose = " + mySpinnerTranspose.getSelectedItem().toString());
 
                 CheckBox myCheckBoxShowNotes = (CheckBox) findViewById(R.id.checkBoxShowNotes);
                 showNotes = myCheckBoxShowNotes.isChecked();
-                Log.e("MyDebug", "ShowNotes = " + showNotes.toString()  );
+                Log.e("MyDebug", "ShowNotes = " + showNotes.toString());
 
                 CheckBox myCheckBoxShowPianoKeys = (CheckBox) findViewById(R.id.checkBoxShowPianoKeys);
                 showPianoKeys = myCheckBoxShowPianoKeys.isChecked();
-                Log.e("MyDebug", "ShowPianoKeys = " + showPianoKeys.toString()  );
+                Log.e("MyDebug", "ShowPianoKeys = " + showPianoKeys.toString());
 
                 CheckBox myCheckBoxShowFrequencies = (CheckBox) findViewById(R.id.checkBoxShowFrequencies);
                 showFrequencies = myCheckBoxShowFrequencies.isChecked();
-                Log.e("MyDebug", "ShowFrequencies = " + showFrequencies.toString()  );
+                Log.e("MyDebug", "ShowFrequencies = " + showFrequencies.toString());
 
                 CheckBox myCheckBoxShowCoordinates = (CheckBox) findViewById(R.id.checkBoxShowCoordinates);
                 showCoordinates = myCheckBoxShowCoordinates.isChecked();
-                Log.e("MyDebug", "ShowCoordinates = " + showCoordinates.toString()  );
+                Log.e("MyDebug", "ShowCoordinates = " + showCoordinates.toString());
 
                 CheckBox myCheckBoxShowKeyPress = (CheckBox) findViewById(R.id.checkBoxShowKeyPress);
                 showKeyPress = myCheckBoxShowKeyPress.isChecked();
-                Log.e("MyDebug", "ShowNotes = " + showKeyPress.toString()  );
+                Log.e("MyDebug", "ShowNotes = " + showKeyPress.toString());
 
                 locString = mySpinnerClef.getSelectedItem().toString();   /*looks like "Treble" or "Bass" */
                 ourKeyShow = locString + " Staff in ";
@@ -183,7 +185,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MyDebug", "ourClef = " + ourClef);
 
                 locString = mySpinnerKey.getSelectedItem().toString();    /* Looks like     D/Bm [C#F#]  */
-                begPos = locString.indexOf('[');   endPos = locString.indexOf(']');
+                begPos = locString.indexOf('[');
+                endPos = locString.indexOf(']');
                 if (begPos == endPos)
                     ourKeySharpFlatList = "";
                 else
@@ -195,8 +198,8 @@ public class MainActivity extends AppCompatActivity {
                 ourKeyShow = ourKeyShow + locString;
                 endPos = locString.indexOf(':');                              /* So, endPos = 2 */
                 if (endPos > 0)
-                    locString = locString.substring(0,endPos); /* Now we just have the number */
-                ourTranspose =  Integer.parseInt(locString);
+                    locString = locString.substring(0, endPos); /* Now we just have the number */
+                ourTranspose = Integer.parseInt(locString);
                 Log.e("MyDebug", "ourTranspose = " + ourTranspose);
 
                 Log.e("MyDebug", "about to instantiate StaffDisplay");
@@ -207,7 +210,8 @@ public class MainActivity extends AppCompatActivity {
                 mycanvas.drawColor(0, PorterDuff.Mode.CLEAR);
                 StaffTable.displayStaffTable();
                 DrawClefSymbol(ourClef);
-                mypaint.setTextSize(25); mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
+                mypaint.setTextSize(25);
+                mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
                 setContentView(ourView);
                 Log.e("MyDebug", "After setContentView(ourView)");
                 /* StaffTable.playStaff();*/
@@ -230,48 +234,57 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void myNonStaticRestore() {setContentView(R.layout.activity_main);
+    public void myNonStaticRestore() {
+        setContentView(R.layout.activity_main);
     }
 
+    @Override
+    public void onBackPressed() {
+        if (getWindow().getDecorView().findViewById(android.R.id.content) != null
+                && ourView != null && ourView.getParent() != null) {
+            // We're on the staff view, go back to menu
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            // We're already on the menu, exit normally
+            super.onBackPressed();
+        }
+    }
     public static void DrawClefSymbol(char staff) {
         Drawable d;
         int myPos;
-        if (staff == 'b' ) {
+        if (staff == 'b') {
             d = mContext.getResources().getDrawable(R.drawable.bass_clef_th);
             d.setBounds(10, 10, 100, 200);
             d.draw(mycanvas);
-        }
-        else if (staff == 't' ) {
+        } else if (staff == 't') {
             d = mContext.getResources().getDrawable(R.drawable.treble_clef_big);
             d.setBounds(10, 10, 200, 300);
             d.draw(mycanvas);
-        }
-        else {
+        } else {
             d = mContext.getResources().getDrawable(R.drawable.treble_clef_big);
             d.setBounds(10, 10, 200, 300);
             d.draw(mycanvas);
-            myPos = (int) ( (float)myHeight * 0.65);
+            myPos = (int) ((float) myHeight * 0.65);
             d = mContext.getResources().getDrawable(R.drawable.bass_clef_th);
-            d.setBounds(10, myPos, 100,  myPos + 200);
+            d.setBounds(10, myPos, 100, myPos + 200);
             d.draw(mycanvas);
         }
 
 
     }
 
-    static public void DisplayStaffLine(int yPos, char vtype, char sharpFlat, int halfChunk, String toShow, int idx)
-    {
+    static public void DisplayStaffLine(int yPos, char vtype, char sharpFlat, int halfChunk, String toShow, int idx) {
         int startx, endx, thirdWidth, offset, myTextSize;
 
 
-
         Log.i("MyDebug", "Start of StaffDisplayStaffLine " + yPos + "; " + vtype + "; " + sharpFlat);
-        if (sharpFlat != ' ' && idx > 2 && idx < 10)  /* constrain sharp & flats to body of staff */
-        {
+        if (sharpFlat != ' ' && idx > 2 && idx < 10)  /* constrain sharp & flats to body of staff */ {
             offset = halfChunk / 10;   /* just a little bit of fudge to line up better */
             mypaint.setTextSize(100);  /* should set font size based on screen size */
             mypaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.ITALIC));
-            mycanvas.drawText(String.valueOf(sharpFlat), 40+ sharpFlatZigZag , yPos + halfChunk + offset, mypaint);
+            mycanvas.drawText(String.valueOf(sharpFlat), 40 + sharpFlatZigZag, yPos + halfChunk + offset, mypaint);
             if (sharpFlatZigZag == 0) sharpFlatZigZag = 40;
             else sharpFlatZigZag = 0;
             mypaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.NORMAL));
@@ -283,29 +296,45 @@ public class MainActivity extends AppCompatActivity {
         myTextSize = 50;
         if (MainActivity.getShowPianoKeys()) myTextSize = myTextSize - 15;
         if (MainActivity.getShowFrequencies()) myTextSize = myTextSize - 15;
-        mypaint.setTextSize(myTextSize); mycanvas.drawText(toShow, myWidth - 120, yPos + 8, mypaint);
+        mypaint.setTextSize(myTextSize);
+        mycanvas.drawText(toShow, myWidth - 120, yPos + 8, mypaint);
         if (vtype == ' ') /* A Space */
             return;/* There ain't nothing to do on a space */
-        if (vtype == '_') /* A Full Staff Line */
-        {
+        if (vtype == '_') /* A Full Staff Line */ {
             startx = 40;
             endx = myWidth - 130;
-            Log.i("MyDebug", "  Full Width drawline: " + startx + "; " + yPos + "; " + endx );
+            Log.i("MyDebug", "  Full Width drawline: " + startx + "; " + yPos + "; " + endx);
             mycanvas.drawLine(startx, yPos, endx, yPos, mypaint);
-        }
-        else /* A short line above/below the staff.  Where to put it? how about 1/3 centered? */
-        {
+        } else /* A short line above/below the staff.  Where to put it? how about 1/3 centered? */ {
             thirdWidth = myWidth / 3;
             startx = thirdWidth;
             endx = thirdWidth * 2;
-            Log.i("MyDebug", "  Part Width drawline: " + startx + "; " + yPos + "; " + endx );
+            Log.i("MyDebug", "  Part Width drawline: " + startx + "; " + yPos + "; " + endx);
             mycanvas.drawLine(startx, yPos, endx, yPos, mypaint);
         }
 
     }
 
-    public void fakeDisplayStaff()
-    {
+    static public void changeStaff(int direction) {
+        // b=bass, 'm'=middle, t=treble
+        if (direction > 0) {
+            if (ourClef == 'b') ourClef = 'm';
+            else if (ourClef == 'm') ourClef = 't';
+        } else {
+            if (ourClef == 't') ourClef = 'm';
+            else if (ourClef == 'm') ourClef = 'b';
+        }
+        // Rebuild and redraw
+        StaffTable.BuildStaffTableInternally(ourClef, ourTranspose, myHeight, ourKeySharpFlatList);
+        mycanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        StaffTable.displayStaffTable();
+        DrawClefSymbol(ourClef);
+        mypaint.setTextSize(25);
+        mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
+        ourView.setImageBitmap(mybitmap);
+    }
+
+    public void fakeDisplayStaff() {
     /*
         DisplayStaffLine(1932, '-', ' ');
         DisplayStaffLine(1815, ' ', ' ');
@@ -327,40 +356,38 @@ public class MainActivity extends AppCompatActivity {
     */
     }
 
-    public void doNoteSearchTests()
-    {
-    double freq;
-    freq = SearchNoteFreqTableForFreq('C', ' ', 2, 0); /* Search for Freq */
+    public void doNoteSearchTests() {
+        double freq;
+        freq = SearchNoteFreqTableForFreq('C', ' ', 2, 0); /* Search for Freq */
         Log.i("MyDebug", "C2 result:" + freq + " (Should be 65.406)");
 
-    freq = SearchNoteFreqTableForFreq('C', ' ', 2, 2); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('C', ' ', 2, 2); /* Search for Freq */
         Log.i("MyDebug", "C2 + 2 result: " + freq + " (Should be 73.416)");
 
-    freq = SearchNoteFreqTableForFreq('C', '#', 2, 0); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('C', '#', 2, 0); /* Search for Freq */
         Log.i("MyDebug", "C2# result: " + freq + " (Should be 69.296)");
 
-    freq = SearchNoteFreqTableForFreq('D', ' ', 2, 0); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('D', ' ', 2, 0); /* Search for Freq */
         Log.i("MyDebug", "D2 result: " + freq + " (Should be 73.416)");
 
-    freq = SearchNoteFreqTableForFreq('D', 'b', 2, 0); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('D', 'b', 2, 0); /* Search for Freq */
         Log.i("MyDebug", "D2b result: " + freq + " (Should be 69.296)");
 
-    freq = SearchNoteFreqTableForFreq('E', 'b', 2, -1); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('E', 'b', 2, -1); /* Search for Freq */
         Log.i("MyDebug", "E2b - 1 result: " + freq + " (Should be 73.416)");
 
-    freq = SearchNoteFreqTableForFreq('D', 'b', 2, 15); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('D', 'b', 2, 15); /* Search for Freq */
         Log.i("MyDebug", "D2b + 15 result: " + freq + " (Should ignore transpose > 13 and be 69.296)");
 
-    freq = SearchNoteFreqTableForFreq('D', 'b', 2, -10);/* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('D', 'b', 2, -10);/* Search for Freq */
         Log.i("MyDebug", "D2b - 10 result: " + freq + " (Should be 38.891)");
 
-    freq = SearchNoteFreqTableForFreq('D', 'b', 0, -10); /* Search for Freq */
+        freq = SearchNoteFreqTableForFreq('D', 'b', 0, -10); /* Search for Freq */
         Log.i("MyDebug", "D2b - 10 result: " + freq + " (Should not run off table and be 16.351)");
 
     }
 
-    public void doStaffSearchTests()
-    {
+    public void doStaffSearchTests() {
         double freq;
         freq = StaffTable.SearchStaffTableForFreq(1188); /* Search for Freq */
         Log.e("MyDebug", "C2 result:" + freq + " (Should be 65.406)");
@@ -371,8 +398,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public void doStaffTests()
-    {
+    public void doStaffTests() {
     /*Log.i("MyDebug", "Building Treble Staff in key of D major; (C#, F#) no transpose ");
     StaffTable.BuildStaffTableInternally('t', 0, myHeight, "C#F#");
     StaffTable.printStaffTable();
@@ -382,10 +408,10 @@ public class MainActivity extends AppCompatActivity {
     StaffTable.BuildStaffTableInternally('t', -2, myHeight, "C#F#");
     StaffTable.printStaffTable();
     */
-    Log.i("MyDebug", "Building Bass Staff in key of F major; (Bb) no transpose ");
-    StaffTable.BuildStaffTableInternally('b', 0, myHeight, "Bb");
-    StaffTable.printStaffTable();
-    StaffTable.displayStaffTable();
+        Log.i("MyDebug", "Building Bass Staff in key of F major; (Bb) no transpose ");
+        StaffTable.BuildStaffTableInternally('b', 0, myHeight, "Bb");
+        StaffTable.printStaffTable();
+        StaffTable.displayStaffTable();
     }
 
     public static void InitSound() {
@@ -472,8 +498,12 @@ public class MainActivity extends AppCompatActivity {
         /* ok, David's first batch of sounds are all off by an octave.  So, C2 is really C3.
         Ergo, we are going to shift all of them up 12 slots.      */
         int idx;
-        for(idx=70; idx >= 12; idx--) { sm[idx] = sm[idx - 12];    }
-        for(idx=11; idx >= 0; idx--) { sm[idx] = 0;    }
+        for (idx = 70; idx >= 12; idx--) {
+            sm[idx] = sm[idx - 12];
+        }
+        for (idx = 11; idx >= 0; idx--) {
+            sm[idx] = 0;
+        }
 
 
         Log.e("InitSound", "After Load called...");
@@ -483,7 +513,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     static public void playSound(int sound) {
-        Log.e("PlaySound", "Called for: " + sound + " sm is: " + sm[sound] );
+        Log.e("PlaySound", "Called for: " + sound + " sm is: " + sm[sound]);
         if (sm[sound] == 0) return;
         if (showKeyPress) showNoteDetails();
         soundPool.play(sm[sound], 1f, 1f, 1, 0, 1f);
@@ -494,6 +524,7 @@ public class MainActivity extends AppCompatActivity {
         soundPool.release();
         soundPool = null;
     }
+
     static public void mySleep(int secs) {
         try {
             Thread.sleep(secs * 1000);
@@ -501,28 +532,43 @@ public class MainActivity extends AppCompatActivity {
             Thread.currentThread().interrupt();
         }
     }
+
     static public int getMyWidth() {
         return myWidth;
     }
-    static public boolean getShowNotes() { return showNotes;    }
-    static public boolean getShowPianoKeys() { return showPianoKeys;    }
-    static public boolean getShowFrequencies() { return showFrequencies;    }
-    static public float getfudgeFactor() { return fudgeFactor;    }
+
+    static public boolean getShowNotes() {
+        return showNotes;
+    }
+
+    static public boolean getShowPianoKeys() {
+        return showPianoKeys;
+    }
+
+    static public boolean getShowFrequencies() {
+        return showFrequencies;
+    }
+
+    static public float getfudgeFactor() {
+        return fudgeFactor;
+    }
 
 
-    static public void showNoteDetails(){
+    static public void showNoteDetails() {
         int fudgedY;
         String toShow;
         toShow = "";
 
         /* first, build up the string that we're going to show. */
-        if (showNotes) toShow = StaffTable.getLastNote() + TouchEventAction.getLastAccidental() ;
-        if (showCoordinates) toShow = toShow + " at X,Y: " + String.valueOf(TouchEventAction.getLastX()) + "," + String.valueOf(TouchEventAction.getLastY())
+        if (showNotes) toShow = StaffTable.getLastNote() + TouchEventAction.getLastAccidental();
+        if (showCoordinates)
+            toShow = toShow + " at X,Y: " + String.valueOf(TouchEventAction.getLastX()) + "," + String.valueOf(TouchEventAction.getLastY())
                     + "," + String.valueOf(StaffTable.getLastFudgedY());
-        if (MainActivity.getShowPianoKeys()) toShow = toShow +  " - note " + String.valueOf(StaffTable.getLastPianoNote());
+        if (MainActivity.getShowPianoKeys())
+            toShow = toShow + " - note " + String.valueOf(StaffTable.getLastPianoNote());
         if (MainActivity.getShowFrequencies() && TouchEventAction.getLastAccidental() == ' ')
             /* Can't figure frequency on accidentals so suppress. */
-            toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
+            toShow = toShow + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
 
         /* Now, the 2017 behavior was to use a Toast to display the selected note.  This ceased to work, and was clunky anyway.
         Toast toast = Toast.makeText(mContext, toShow, Toast.LENGTH_SHORT);
@@ -543,8 +589,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Draw gray background rectangle
         mypaint.setColor(Color.LTGRAY);  // or Color.argb(180, 128, 128, 128) for semi-transparent
-        mycanvas.drawRect(myWidth/3, StaffTable.getLastLinePos() - 55,
-                myWidth/3 + 300, StaffTable.getLastLinePos() + 10, mypaint);
+        mycanvas.drawRect(myWidth / 3, StaffTable.getLastLinePos() - 55,
+                myWidth / 3 + 300, StaffTable.getLastLinePos() + 10, mypaint);
 
         mypaint.setTextSize(25);
         mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
@@ -552,7 +598,7 @@ public class MainActivity extends AppCompatActivity {
         // Now draw note label at recognized position
         mypaint.setColor(Color.BLACK);
         mypaint.setTextSize(50);
-        mycanvas.drawText(toShow, myWidth/3, StaffTable.getLastLinePos(), mypaint);
+        mycanvas.drawText(toShow, myWidth / 3, StaffTable.getLastLinePos(), mypaint);
 
         // Redraw the view
         ourView.invalidate();
@@ -576,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
         myString = String.valueOf(fudgeFactor);
 
         /* Well, I tried a couple of approaches to bridge the static calls non-static.  Both failed.  I don't know how to get out of this swamp */
-        writeToFile(myString, mContext  );
+        writeToFile(myString, mContext);
         /* OR
         try {
             outputStream = openFileOutput("fudgeFactor.dat", mContext.MODE_PRIVATE);
@@ -588,47 +634,45 @@ public class MainActivity extends AppCompatActivity {
         */
     }
 
-    static private void writeToFile(String data,Context context) {
+    static private void writeToFile(String data, Context context) {
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("fudgefactor.dat", Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("Exception", "File write failed: " + e.toString());
         }
     }
 
-     static public void getPriorFudgeFactor(){
+    static public void getPriorFudgeFactor() {
         String myString;
         myString = readFromFile(mContext);
-         Log.e("getPriorFudgeFactor", "readFromFile returned: " + myString);
-         if (myString != "") {
-             fudgeFactor = Float.parseFloat(myString);
-             if (fudgeFactor > 2f || fudgeFactor < 0.5f ) fudgeFactor = 1.1f;
-             Log.e("getPriorFudgeFactor", "fudgeFactor is: " + fudgeFactor);
-         }
-     }
+        Log.e("getPriorFudgeFactor", "readFromFile returned: " + myString);
+        if (myString != "") {
+            fudgeFactor = Float.parseFloat(myString);
+            if (fudgeFactor > 2f || fudgeFactor < 0.5f) fudgeFactor = 1.1f;
+            Log.e("getPriorFudgeFactor", "fudgeFactor is: " + fudgeFactor);
+        }
+    }
 
     static String readFromFile(Context context) {
         String ret = "";
         try {
             InputStream inputStream = context.openFileInput("fudgefactor.dat");
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
                 StringBuilder stringBuilder = new StringBuilder();
 
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                while ((receiveString = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveString);
                 }
 
                 inputStream.close();
                 ret = stringBuilder.toString();
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             Log.e("login activity", "File not found: " + e.toString());
         } catch (IOException e) {
             Log.e("login activity", "Can not read file: " + e.toString());
@@ -640,4 +684,15 @@ public class MainActivity extends AppCompatActivity {
     static public void toastThis(String msg) {
         Toast.makeText(mContext, msg, Toast.LENGTH_LONG).show();
     }
+
+
+    static public void goBack() {
+        new android.os.Handler(android.os.Looper.getMainLooper()).post(() -> {
+            // Reset the view back to the selection screen
+            if (MainActivity.mContext instanceof MainActivity) {
+                ((MainActivity) MainActivity.mContext).myNonStaticRestore();
+            }
+        });
+    }
+
 }
