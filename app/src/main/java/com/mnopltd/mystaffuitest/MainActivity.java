@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Insets;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
@@ -587,6 +588,7 @@ public class MainActivity extends AppCompatActivity {
         StaffTable.displayStaffTable();
         DrawClefSymbol(ourClef);
 
+        /* rectangle approach
         // Draw gray background rectangle
         mypaint.setColor(Color.LTGRAY);  // or Color.argb(180, 128, 128, 128) for semi-transparent
         mycanvas.drawRect(myWidth / 3, StaffTable.getLastLinePos() - 55,
@@ -599,9 +601,27 @@ public class MainActivity extends AppCompatActivity {
         mypaint.setColor(Color.BLACK);
         mypaint.setTextSize(50);
         mycanvas.drawText(toShow, myWidth / 3, StaffTable.getLastLinePos(), mypaint);
+        end of rectangle.
+         */
+        // Define the oval bounds around the text position
+        RectF ovalBounds = new RectF(
+                myWidth / 3 - 10,
+                StaffTable.getLastLinePos() - 110,
+                myWidth / 3 + 310,
+                StaffTable.getLastLinePos() + 15
+        );
 
+        // Draw black oval
+        mypaint.setColor(Color.BLACK);
+        mycanvas.drawOval(ovalBounds, mypaint);
+
+        // Draw white text on top
+        mypaint.setColor(Color.WHITE);
+        mypaint.setTextSize(60);
+        mycanvas.drawText(toShow, myWidth / 3 +20, StaffTable.getLastLinePos(), mypaint);
+        mypaint.setColor(Color.BLACK);
         // Redraw the view
-        ourView.invalidate();
+        ourView.setImageBitmap(mybitmap);
     }
 
     static public int dpToPx(int dp) {

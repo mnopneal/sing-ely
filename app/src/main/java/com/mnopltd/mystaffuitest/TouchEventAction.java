@@ -74,7 +74,7 @@ public class TouchEventAction extends ImageView {
                     return true;
                 }
 
-                if (eventX < 50) lastAccidental = 'b';
+                if (eventX < 80) lastAccidental = 'b';
 
                 if (eventX > (MainActivity.getMyWidth() - 140))  /* Sharp Accidental */  lastAccidental = '#';
                 pNote = StaffTable.SearchStaffTableForPianoKey((int)eventY, lastAccidental);
