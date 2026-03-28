@@ -41,7 +41,7 @@ import static com.mnopltd.mystaffuitest.NoteFreqTable.SearchNoteFreqTableForFreq
 
 public class MainActivity extends AppCompatActivity {
 
-    public TouchEventAction ourView;
+    public static TouchEventAction ourView;
     static public int myHeight = 1280; static int myWidth = 720;
     static public char ourClef;
     static public int ourTranspose;
@@ -233,25 +233,25 @@ public class MainActivity extends AppCompatActivity {
     public void myNonStaticRestore() {setContentView(R.layout.activity_main);
     }
 
-    public void DrawClefSymbol(char staff) {
+    public static void DrawClefSymbol(char staff) {
         Drawable d;
         int myPos;
         if (staff == 'b' ) {
-            d = getResources().getDrawable(R.drawable.bass_clef_th);
+            d = mContext.getResources().getDrawable(R.drawable.bass_clef_th);
             d.setBounds(10, 10, 100, 200);
             d.draw(mycanvas);
         }
         else if (staff == 't' ) {
-            d = getResources().getDrawable(R.drawable.treble_clef_big);
+            d = mContext.getResources().getDrawable(R.drawable.treble_clef_big);
             d.setBounds(10, 10, 200, 300);
             d.draw(mycanvas);
         }
         else {
-            d = getResources().getDrawable(R.drawable.treble_clef_big);
+            d = mContext.getResources().getDrawable(R.drawable.treble_clef_big);
             d.setBounds(10, 10, 200, 300);
             d.draw(mycanvas);
             myPos = (int) ( (float)myHeight * 0.65);
-            d = getResources().getDrawable(R.drawable.bass_clef_th);
+            d = mContext.getResources().getDrawable(R.drawable.bass_clef_th);
             d.setBounds(10, myPos, 100,  myPos + 200);
             d.draw(mycanvas);
         }
@@ -515,6 +515,7 @@ public class MainActivity extends AppCompatActivity {
         String toShow;
         toShow = "";
 
+        /* first, build up the string that we're going to show. */
         if (showNotes) toShow = StaffTable.getLastNote() + TouchEventAction.getLastAccidental() ;
         if (showCoordinates) toShow = toShow + " at X,Y: " + String.valueOf(TouchEventAction.getLastX()) + "," + String.valueOf(TouchEventAction.getLastY())
                     + "," + String.valueOf(StaffTable.getLastFudgedY());
@@ -523,16 +524,38 @@ public class MainActivity extends AppCompatActivity {
             /* Can't figure frequency on accidentals so suppress. */
             toShow = toShow  + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
 
-
+        /* Now, the 2017 behavior was to use a Toast to display the selected note.  This ceased to work, and was clunky anyway.
         Toast toast = Toast.makeText(mContext, toShow, Toast.LENGTH_SHORT);
 
         /* This puts it where the finger press was... */
         /* toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, (TouchEventAction.getLastY() + StaffTable.gethalfChunk() + 10) ); */
 
-        /* But maybe it's better to put it where we recognized it. */
+        /* But maybe it's better to put it where we recognized it.
         fudgedY = (int)( (float)StaffTable.getLastLinePos() / fudgeFactor );
         toast.setGravity(Gravity.TOP|Gravity.LEFT, 0, fudgedY + StaffTable.gethalfChunk() + 20  );
         toast.show();
+        */
+
+        // Redraw the staff completely
+        mycanvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        StaffTable.displayStaffTable();
+        DrawClefSymbol(ourClef);
+
+        // Draw gray background rectangle
+        mypaint.setColor(Color.LTGRAY);  // or Color.argb(180, 128, 128, 128) for semi-transparent
+        mycanvas.drawRect(myWidth/3, StaffTable.getLastLinePos() - 55,
+                myWidth/3 + 300, StaffTable.getLastLinePos() + 10, mypaint);
+
+        mypaint.setTextSize(25);
+        mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
+
+        // Now draw note label at recognized position
+        mypaint.setColor(Color.BLACK);
+        mypaint.setTextSize(50);
+        mycanvas.drawText(toShow, myWidth/3, StaffTable.getLastLinePos(), mypaint);
+
+        // Redraw the view
+        ourView.invalidate();
     }
 
     static public int dpToPx(int dp) {
