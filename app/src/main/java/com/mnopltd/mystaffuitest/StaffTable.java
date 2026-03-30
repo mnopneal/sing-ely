@@ -133,6 +133,7 @@ public class StaffTable
         int idx;
         String toShow;
         System.out.println("Display BaseStaff Table ...");
+        MainActivity.sharpFlatZigZag = 0;
         for(idx=0; idx < 17; idx++) {
             toShow = "";
             if (MainActivity.getShowNotes()) toShow = toShow + String.valueOf(BaseStaff[idx].getNote()) + String.valueOf(BaseStaff[idx].getOctave())

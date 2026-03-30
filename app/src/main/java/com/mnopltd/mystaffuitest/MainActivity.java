@@ -116,8 +116,9 @@ public class MainActivity extends AppCompatActivity {
 
         getPriorFudgeFactor();
         setContentView(R.layout.activity_main);
-
-        makeText(mContext, "Starting UI...", Toast.LENGTH_LONG).show();
+        if (!soundsInitialized) {
+            makeText(mContext, "Starting UI...", Toast.LENGTH_LONG).show();
+        }
 
         TextView myHelp;
         myHelp = (TextView) findViewById(R.id.textView6);
@@ -285,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
         Log.i("MyDebug", "Start of StaffDisplayStaffLine " + yPos + "; " + vtype + "; " + sharpFlat);
         if (sharpFlat != ' ' && idx > 2 && idx < 10)  /* constrain sharp & flats to body of staff */ {
-            offset = halfChunk / 10;   /* just a little bit of fudge to line up better */
+            offset = halfChunk / 10 - 28;   /* just a little bit of fudge to line up better */
             mypaint.setTextSize(100);  /* should set font size based on screen size */
             mypaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.ITALIC));
             mycanvas.drawText(String.valueOf(sharpFlat), 40 + sharpFlatZigZag, yPos + halfChunk + offset, mypaint);

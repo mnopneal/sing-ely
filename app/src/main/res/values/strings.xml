@@ -7,7 +7,19 @@
         <item>Middle of Bass and Treble</item>
     </string-array>
 
+    <string name="help_text">The note will sound when your finger comes up.
+        Pressing to left or right of staff plays the accidental flat or sharp.
+        Swiping down moves towards Bass staff, or up moves towards Treble staff.
+        Note that all the screen geometry was tested on a Samsung A35.  Using this on
+        a device with a different sized screen might result in different results. There is
+        an experimental re-calibration procedure to tell us your actual usable screen
+        dimensions.
+        If Notes are wrong vertically press in top left of white area and follow directions.
+        Address comments to neal@mnopltd.com.
+    </string>
+
     <string name="clefPrompt">Pick Staff</string>
+
 
     <string-array name="keyNames">
         <item>C/Am []</item>
