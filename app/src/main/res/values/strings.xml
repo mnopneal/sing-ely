@@ -7,9 +7,9 @@
         <item>Middle of Bass and Treble</item>
     </string-array>
 
-    <string name="help_text">The note will sound when your finger comes up.
-        Pressing to left or right of staff plays the accidental flat or sharp.
-        Swiping down moves towards Bass staff, or up moves towards Treble staff.
+    <string name="help_text">The note will sound when your finger goes down.
+        Pressing near the flat or sharp to left or right of staff plays the accidental flat or sharp.
+        Swiping down on the far left moves towards Bass staff, or up moves towards Treble staff.
         Note that all the screen geometry was tested on a Samsung A35.  Using this on
         a device with a different sized screen might result in different results. There is
         an experimental re-calibration procedure to tell us your actual usable screen

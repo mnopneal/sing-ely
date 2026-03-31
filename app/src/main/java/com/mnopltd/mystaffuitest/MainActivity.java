@@ -310,6 +310,11 @@ public class MainActivity extends AppCompatActivity {
             endx = myWidth - 130;
             Log.i("MyDebug", "  Full Width drawline: " + startx + "; " + yPos + "; " + endx);
             mycanvas.drawLine(startx, yPos, endx, yPos, mypaint);
+            // Draw a flat b around 150 as a swim lane marker
+            mypaint.setTextSize(40);
+            mypaint.setTypeface(Typeface.create(Typeface.SANS_SERIF, Typeface.ITALIC));
+            mycanvas.drawText("b", 160, yPos, mypaint);
+            mycanvas.drawText("#", myWidth - 160, yPos, mypaint);
         } else /* A short line above/below the staff.  Where to put it? how about 1/3 centered? */ {
             thirdWidth = myWidth / 3;
             startx = thirdWidth;
@@ -566,6 +571,7 @@ public class MainActivity extends AppCompatActivity {
 
     static public void showNoteDetails() {
         int fudgedY;
+        int accidentalOffset = 0;
         String toShow;
         toShow = "";
 
@@ -579,6 +585,8 @@ public class MainActivity extends AppCompatActivity {
         if (MainActivity.getShowFrequencies() && TouchEventAction.getLastAccidental() == ' ')
             /* Can't figure frequency on accidentals so suppress. */
             toShow = toShow + " - " + String.valueOf(StaffTable.getLastFreq()) + "hz";
+        if (TouchEventAction.getLastAccidental() == 'b') {accidentalOffset = -200;}
+        if (TouchEventAction.getLastAccidental() == '#') {accidentalOffset = 200;}
 
         /* Now, the 2017 behavior was to use a Toast to display the selected note.  This ceased to work, and was clunky anyway.
         Toast toast = Toast.makeText(mContext, toShow, Toast.LENGTH_SHORT);
@@ -614,9 +622,9 @@ public class MainActivity extends AppCompatActivity {
          */
         // Define the oval bounds around the text position
         RectF ovalBounds = new RectF(
-                myWidth / 3 - 10,
+                myWidth / 3 - 10 + accidentalOffset,
                 StaffTable.getLastLinePos() - 90,
-                myWidth / 3 + 310,
+                myWidth / 3 + 310 + accidentalOffset,
                 StaffTable.getLastLinePos() + 95
         );
 
@@ -635,7 +643,7 @@ public class MainActivity extends AppCompatActivity {
         // For vertical centering, offset by half the text height
         Paint.FontMetrics fm = mypaint.getFontMetrics();
         float textHeight = fm.descent - fm.ascent;
-        mycanvas.drawText(toShow, ovalCenterX - textWidth / 2, ovalCenterY - fm.ascent - textHeight / 2, mypaint);
+        mycanvas.drawText(toShow, ovalCenterX - textWidth / 2 + accidentalOffset, ovalCenterY - fm.ascent - textHeight / 2, mypaint);
 
         mypaint.setColor(Color.BLACK);
         // Redraw the view

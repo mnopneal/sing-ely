@@ -52,21 +52,14 @@ public class TouchEventAction extends ImageView {
 
         gestureDetector.onTouchEvent(event);
         switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                lastX = (int) eventX;
-                lastY = (int) eventY;
-                lastAccidental = ' ';
-                // just record position, don't play yet
-                flingDetected = false;  // reset flag
-                return true;
 
-            case MotionEvent.ACTION_UP:
-                Log.e("Action", "UP Tapped at: (" + eventX + "," + eventY + ")");
+            case MotionEvent.ACTION_DOWN:
+                Log.e("Action", "DOWN Tapped at: (" + eventX + "," + eventY + ")");
                 Log.e("Action", "Converts to: " + MainActivity.dpToPx((int)eventY) +  " or " + MainActivity.pxToDp((int)eventY));
 
-                float deltaY = eventY - lastY;
-                if (Math.abs(deltaY) > 100) {
-                    return true;  // was a swipe, ignore
+
+                if (eventX < 150) {
+                    return true;  // was a swipe to position, ignore
                 }
 
                 lastX = (int) eventX;
@@ -87,9 +80,9 @@ public class TouchEventAction extends ImageView {
                     return true;
                 }
 
-                if (eventX < 80) lastAccidental = 'b';
+                if (eventX < 200) lastAccidental = 'b';
 
-                if (eventX > (MainActivity.getMyWidth() - 140))  /* Sharp Accidental */  lastAccidental = '#';
+                if (eventX > (MainActivity.getMyWidth() - 150))  /* Sharp Accidental */  lastAccidental = '#';
                 pNote = StaffTable.SearchStaffTableForPianoKey((int)eventY, lastAccidental);
                 Log.e("Action UP", "pNote: " + pNote);
                 MainActivity.playSound(pNote);
