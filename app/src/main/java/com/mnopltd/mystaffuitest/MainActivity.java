@@ -184,7 +184,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("MyDebug", "ShowNotes = " + showKeyPress.toString());
 
                 locString = mySpinnerClef.getSelectedItem().toString();   /*looks like "Treble" or "Bass" */
-                ourKeyShow = locString + " Staff in ";
+                ourKeyShow = "Staff in ";
                 locString = locString.toLowerCase();
                 ourClef = locString.charAt(0);
                 Log.e("MyDebug", "ourClef = " + ourClef);
@@ -215,7 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 mycanvas.drawColor(0, PorterDuff.Mode.CLEAR);
                 StaffTable.displayStaffTable();
                 DrawClefSymbol(ourClef);
-                mypaint.setTextSize(40);
+                mypaint.setTextSize(50);
                 mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
                 setContentView(ourView);
                 Log.e("MyDebug", "After setContentView(ourView)");
@@ -339,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
         mycanvas.drawColor(0, PorterDuff.Mode.CLEAR);
         StaffTable.displayStaffTable();
         DrawClefSymbol(ourClef);
-        mypaint.setTextSize(25);
+        mypaint.setTextSize(50);
         mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
         ourView.setImageBitmap(mybitmap);
     }

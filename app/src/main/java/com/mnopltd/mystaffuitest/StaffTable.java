@@ -1,5 +1,10 @@
 package com.mnopltd.mystaffuitest;
 
+import static com.mnopltd.mystaffuitest.MainActivity.myHeight;
+import static com.mnopltd.mystaffuitest.MainActivity.mycanvas;
+import static com.mnopltd.mystaffuitest.MainActivity.mypaint;
+import static com.mnopltd.mystaffuitest.MainActivity.ourKeyShow;
+
 import android.util.Log;
 
 /**
@@ -143,6 +148,8 @@ public class StaffTable
             MainActivity.DisplayStaffLine(BaseStaff[idx].getLinePos(), BaseStaff[idx].getViewType(),
                     BaseStaff[idx].getSharpFlat(), halfChunk, toShow, idx);
         }
+        mypaint.setTextSize(50);
+        mycanvas.drawText(ourKeyShow, 0, myHeight - 35, mypaint);
     }
 
     static public void playStaff() /* Actually put the staff on the screen */
